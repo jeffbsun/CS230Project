@@ -1,19 +1,31 @@
+import numpy as np
 import quandl
+import time
+
 
 def extract_data():
     quandl.ApiConfig.api_key = '1sQR4zpQidV69Kx6syR3'
 
-    # max_code = 87001
-    # for code_num in range(max_code):
-    #     code = 'HKEX/' + str(code_num)
-    # quandl.get('HKEX/83079', start_date='2018-01-01', end_date='2018-12-31')
-    x = quandl.get('HKEX/83079', start_date='2020-01-01', end_date='2020-01-15')
-    print(type(x))
-    print(x)
+    all_prices = []
+    max_code = 87001
+    for code_num in range(100):
+        code = 'HKEX/' + str(code_num).zfill(5)
+        try:
+            x = quandl.get(code, start_date='2018-01-01', end_date='2018-12-31')
+        except:
+            continue
+        # The first column is the price, so append that
+        all_prices.append(x.values[:, 0])
+
+    print(len(all_prices))
 
 
 def main():
+    print('Starting')
+    start_time = time.time()
     extract_data()
+    end_time = time.time()
+    print('time spent: {0:.2f}'.format(end_time - start_time))
 
 
 if __name__ == '__main__':
