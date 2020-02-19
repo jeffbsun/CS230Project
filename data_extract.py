@@ -8,7 +8,7 @@ def extract_data():
 
     all_prices = []
     max_code = 87001
-    for code_num in range(100):
+    for code_num in range(10):
         code = 'HKEX/' + str(code_num).zfill(5)
         try:
             x = quandl.get(code, start_date='2018-01-01', end_date='2018-12-31')
@@ -18,6 +18,22 @@ def extract_data():
         all_prices.append(x.values[:, 0])
 
     print(len(all_prices))
+    max_len = 0
+    for part in all_prices:
+        max_len = max(max_len, len(part))
+
+    all_prices_list = []
+    for part in all_prices:
+        len_diff = max_len - len(part)
+        list = part.tolist()
+        for i in range(len_diff):
+            list.insert(0, 0.0)
+        all_prices_list.append(list)
+
+    array = np.array(all_prices_list)
+    # array.shape = (len(all_prices), len(all_prices[0]))
+
+    return array
 
 
 def main():
