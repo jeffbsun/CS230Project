@@ -1,14 +1,16 @@
+import math
 import numpy as np
 import quandl
 import time
 
+NUM_VALUES_TO_READ = 100
 
 def extract_data():
     quandl.ApiConfig.api_key = '1sQR4zpQidV69Kx6syR3'
 
     all_prices = []
     max_code = 87001
-    for code_num in range(10):
+    for code_num in range(NUM_VALUES_TO_READ):
         code = 'HKEX/' + str(code_num).zfill(5)
         try:
             x = quandl.get(code, start_date='2018-01-01', end_date='2018-12-31')
@@ -26,6 +28,7 @@ def extract_data():
     for part in all_prices:
         len_diff = max_len - len(part)
         list = part.tolist()
+        list = [x if not math.isnan(x) else 0.0 for x in list]
         for i in range(len_diff):
             list.insert(0, 0.0)
         all_prices_list.append(list)

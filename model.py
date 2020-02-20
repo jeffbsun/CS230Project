@@ -5,26 +5,19 @@ import torch.optim as optim
 import time
 import data_extract
 
+NUM_EPOCHS = 100
 
 class Net(nn.Module):
 
     def __init__(self):
         super(Net, self).__init__()
-        # 1 input image channel, 6 output channels, 3x3 square convolution
-        # kernel
-        # self.conv1 = nn.Conv2d(1, 6, 3)
-        # self.conv2 = nn.Conv2d(6, 16, 3)
-        # an affine operation: y = Wx + b
         self.fc1 = nn.Linear(245, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 1)
+        # self.fc1 = nn.Linear(245, 1)
 
     def forward(self, x):
-        # Max pooling over a (2, 2) window
-        # x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
-        # # If the size is a square you can only specify a single number
-        # x = F.max_pool2d(F.relu(self.conv2(x)), 2)
-        # x = x.view(-1, self.num_flat_features(x))
+        # return torch.tanh(self.fc1(x))
         x = torch.tanh(self.fc1(x))
         x = torch.tanh(self.fc2(x))
         x = torch.tanh(self.fc3(x))
@@ -50,7 +43,7 @@ def run_model():
     print(len(params))
     print(params[0].size())
 
-    for _ in range(10):
+    for _ in range(NUM_EPOCHS):
         input = torch.tensor(x).float()
         predicted = net(input)
 
