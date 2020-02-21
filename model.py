@@ -34,7 +34,10 @@ def run_model():
     data = data_extract.extract_data()
     print('data shape', data.shape)
     x = data[:, 0:-1]
-    y = data[:, -1:]
+    y = data[:, -1:] # y is the price at the last time step
+    # Make y be in the scale of the second-to-last time step so it becomes a value near 0
+    epsilon = 0.0000001
+    y = y / (data[:, -2:-1] + epsilon)
 
     net = Net()
     print(net)

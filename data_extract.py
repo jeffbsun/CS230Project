@@ -3,7 +3,7 @@ import numpy as np
 import quandl
 import time
 
-NUM_VALUES_TO_READ = 100
+NUM_VALUES_TO_READ = 200
 
 def extract_data():
     quandl.ApiConfig.api_key = '1sQR4zpQidV69Kx6syR3'
