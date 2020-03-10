@@ -47,13 +47,27 @@ class Net(nn.Module):
         return num_features
 
 def run_model():
-    data = data_extract.extract_all_data()
+    num_train = 900
+    num_dev = 300
+    num_test = 300
+    num_stocks = num_train + num_dev + num_test
+    data = data_extract.extract_all_data(num_stocks)
     print('data shape', data.shape)
-    x = data[:, :, 0:-1]
-    y = data[:, 0:1, -1:] # y is the price at the last time step
+    x = data[0:num_train, :, 0:-1]
+    y = data[0:num_train, 0:1, -1:] # y is the price at the last time step
     # Make y be in the scale of the second-to-last time step so it becomes a value near 0
     epsilon = 0.0000001
-    y = y / (data[:, 0:1, -2:-1] + epsilon)
+    y = y / (data[0:num_train, 0:1, -2:-1] + epsilon)
+
+    # Create the dev set
+    x_dev = data[num_train:num_train+num_dev, :, 0:-1]
+    y_dev = data[num_train:num_train+num_dev, 0:1, -1:]
+    y_dev = y_dev / (data[num_train:num_train+num_dev, 0:1, -2:-1] + epsilon)
+
+    # Create the test set
+    x_test = data[num_train + num_dev : num_stocks, :, 0:-1]
+    y_test = data[num_train + num_dev : num_stocks, 0:1, -1:]
+    y_test = y_test / (data[num_train + num_dev : num_stocks, 0:1, -2:-1] + epsilon)
 
     net = Net()
     print(net)
@@ -73,6 +87,12 @@ def run_model():
 
         loss = criterion(predicted, actual)
 
+        # Get the dev set loss
+        predicted_dev = net(torch.tensor(x_dev).float())
+        actual_dev = torch.tensor(y_dev).float()
+        loss_dev = torch.nn.MSELoss()(predicted_dev, actual_dev)
+
+        # Run an optimizer step
         net.zero_grad()
 
         optimizer = torch.optim.Adam(net.parameters(), lr=0.0005)
@@ -80,7 +100,13 @@ def run_model():
 
         loss.backward()
         optimizer.step()
-        print('loss:', loss)
+        print('loss:', loss, 'dev-loss:', loss_dev)
+
+    # Print test set loss
+    predicted_test = net(torch.tensor(x_test).float())
+    actual_test = torch.tensor(y_test).float()
+    loss_test = torch.nn.MSELoss()(predicted_test, actual_test)
+    print('test set loss:', loss_test)
 
 
 def main():

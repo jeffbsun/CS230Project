@@ -5,14 +5,15 @@ import time
 
 NUM_VALUES_TO_READ = 200
 
+
 # This extracts price, bid, ask, p/e, high, low, volume, and turnover of stocks and outputs an (n, f, t) array
 # where n is the number of stocks, f is the number of features (8), and t is the number of days of price history
-def extract_all_data():
+def extract_all_data(num_values = NUM_VALUES_TO_READ):
     quandl.ApiConfig.api_key = '1sQR4zpQidV69Kx6syR3'
 
     all_prices = []
     max_code = 87001
-    for code_num in range(NUM_VALUES_TO_READ):
+    for code_num in range(num_values):
         code = 'HKEX/' + str(code_num).zfill(5)
         try:
             x = quandl.get(code, start_date='2018-01-01', end_date='2018-12-31')
@@ -51,6 +52,8 @@ def extract_all_data():
         all_prices_list.append(feature_list)
 
     array = np.array(all_prices_list)
+    # randomly shuffle the data in the first dimension (stocks)
+    np.random.shuffle(array)
     print('data shape: ', array.shape)
     # array.shape = (len(all_prices), len(all_prices[0]))
 
