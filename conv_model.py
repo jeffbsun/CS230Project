@@ -19,7 +19,7 @@ class Net(nn.Module):
         self.cv1 = nn.Conv1d(1, 20, kernel_size)
         self.mx1 = nn.MaxPool1d(max_pool_1_size)
 
-        self.cv2 = nn.Conv1d(20, 20, kernel_size)
+        self.cv2 = nn.Conv1d(20, 1, kernel_size)
         self.mx2 = nn.MaxPool1d(max_pool_1_size)
         # self.cv2 = nn.Conv1d(1, 20, kernel_size)
         # self.mx1 = nn.MaxPool1d(max_pool_1_size)
