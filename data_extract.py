@@ -45,9 +45,22 @@ def extract_all_data(num_values = NUM_VALUES_TO_READ):
         for feature in stock:
             len_diff = max_len - len(feature)
             list = feature.tolist()
-            list = [x if x is not None and not math.isnan(x) else 0.0 for x in list]
-            for i in range(len_diff):
-                list.insert(0, 0.0)
+            new_list = []
+            prev_x = 0.0
+            for x in list:
+                if x is None or math.isnan(x):
+                    x = prev_x
+                new_list.append(x)
+                prev_x = x
+            list = new_list
+            # list = [x if x is not None and not math.isnan(x) else 0.0 for x in list]
+            if len(list) > 0:
+                first_value = list[0]
+                for i in range(len_diff):
+                    list.insert(0, first_value)
+            else:
+                for i in range(len_diff):
+                    list.insert(0, 0.0)
             feature_list.append(list)
         all_prices_list.append(feature_list)
 
