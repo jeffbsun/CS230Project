@@ -20,7 +20,7 @@ class Net(nn.Module):
         # return torch.tanh(self.fc1(x))
         x = torch.tanh(self.fc1(x))
         x = torch.tanh(self.fc2(x))
-        x = torch.tanh(self.fc3(x))
+        x = torch.relu(self.fc3(x))
         return x
 
     def num_flat_features(self, x):
